@@ -134,12 +134,20 @@ After first run, create an admin user manually through the registration API or d
 
 The repository ships with GitHub Actions workflows that automate CI and deployment.
 
+### 🌐 Live demo (GitHub Pages)
+
+> **<https://pmgxmedia.github.io/CarMarket/>**
+
+The frontend is automatically deployed to GitHub Pages on every push to `main`.  
+One-time setup: go to **Settings → Pages → Source** and choose **"GitHub Actions"**.
+
 ### Overview
 
 | Layer    | Platform | Free tier |
 |----------|----------|-----------|
+| Frontend (static) | [GitHub Pages](https://pages.github.com) | ✅ |
 | Backend  | [Render](https://render.com) | ✅ |
-| Frontend | [Vercel](https://vercel.com) | ✅ |
+| Frontend (full-stack) | [Vercel](https://vercel.com) | ✅ |
 | Database | [MongoDB Atlas](https://www.mongodb.com/atlas) | ✅ (512 MB) |
 | Images   | [Cloudinary](https://cloudinary.com) | ✅ (25 credits/mo) |
 

@@ -17,7 +17,7 @@ services:
       - key: NODE_ENV
         value: production
       - key: PORT
-        value: 10000        # Render sets PORT automatically; this is the default
+        value: 10000        # Default port; Render overrides this with its own PORT env var at runtime
       - key: MONGODB_URI
         sync: false         # set manually in the Render Dashboard
       - key: JWT_SECRET
