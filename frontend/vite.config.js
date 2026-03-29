@@ -3,6 +3,9 @@ import react from '@vitejs/plugin-react'
 
 export default defineConfig({
   plugins: [react()],
+  // VITE_BASE_PATH lets CI override the base for GitHub Pages (/CarMarket/)
+  // while keeping '/' for local dev and Vercel.
+  base: process.env.VITE_BASE_PATH || '/',
   server: {
     port: 3000,
     proxy: {

@@ -130,6 +130,86 @@ After first run, create an admin user manually through the registration API or d
 7. If won, complete payment and pickup
 8. Upload delivery photo
 
+## Deployment
+
+The repository ships with GitHub Actions workflows that automate CI and deployment.
+
+### 🌐 Live demo (GitHub Pages)
+
+> **<https://pmgxmedia.github.io/CarMarket/>**
+
+The frontend is automatically deployed to GitHub Pages on every push to `main`.  
+One-time setup: go to **Settings → Pages → Source** and choose **"GitHub Actions"**.
+
+### Overview
+
+| Layer    | Platform | Free tier |
+|----------|----------|-----------|
+| Frontend (static) | [GitHub Pages](https://pages.github.com) | ✅ |
+| Backend  | [Render](https://render.com) | ✅ |
+| Frontend (full-stack) | [Vercel](https://vercel.com) | ✅ |
+| Database | [MongoDB Atlas](https://www.mongodb.com/atlas) | ✅ (512 MB) |
+| Images   | [Cloudinary](https://cloudinary.com) | ✅ (25 credits/mo) |
+
+### 1 – Database (MongoDB Atlas)
+
+1. Create a free cluster on [MongoDB Atlas](https://cloud.mongodb.com).
+2. Add a database user and whitelist `0.0.0.0/0` (or Render's IP range).
+3. Copy the connection string – you will need it in step 2.
+
+### 2 – Backend (Render)
+
+#### Option A – Render Blueprint (recommended)
+
+1. Fork / connect this repository in the [Render Dashboard](https://dashboard.render.com).
+2. Click **New → Blueprint** and select this repo. Render reads `render.yaml` automatically.
+3. Fill in the environment variables that are marked `sync: false`:
+   - `MONGODB_URI` – Atlas connection string from step 1
+   - `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET`
+4. Deploy. Note the public URL (e.g. `https://carmarket-backend.onrender.com`).
+
+#### Option B – GitHub Actions deploy hook
+
+1. In the Render Dashboard → service → **Settings → Deploy Hooks**, create a hook.
+2. Add the hook URL as a GitHub repository secret named **`RENDER_DEPLOY_HOOK_URL`**.  
+   Every push to `main` will then trigger a Render re-deploy automatically.
+
+### 3 – Frontend (Vercel)
+
+1. Install the [Vercel CLI](https://vercel.com/docs/cli) locally and run:
+   ```bash
+   cd frontend
+   vercel link      # connect to your Vercel project
+   vercel env add VITE_API_URL   # set to your Render backend URL
+   ```
+2. Add the following secrets/variables to your GitHub repository
+   (**Settings → Secrets and variables → Actions**):
+
+   | Name | Kind | Value |
+   |------|------|-------|
+   | `VERCEL_TOKEN` | Secret | Vercel API token ([generate here](https://vercel.com/account/tokens)) |
+   | `VERCEL_ORG_ID` | Variable | Found in `vercel link` output / `.vercel/project.json` |
+   | `VERCEL_PROJECT_ID` | Variable | Found in `vercel link` output / `.vercel/project.json` |
+   | `VITE_API_URL` | Variable | Your Render backend URL (e.g. `https://carmarket-backend.onrender.com`) |
+
+3. Push to `main` – the **Deploy** workflow deploys the frontend to Vercel automatically.
+
+### 4 – GitHub Actions secrets summary
+
+| Secret / Variable | Used by | Description |
+|---|---|---|
+| `RENDER_DEPLOY_HOOK_URL` | `deploy.yml` | Secret – Render deploy hook URL (backend) |
+| `VERCEL_TOKEN` | `deploy.yml` | Secret – Vercel API token (frontend) |
+| `VITE_API_URL` | `ci.yml`, `deploy.yml` | Variable – public backend URL for the frontend build |
+
+### CI workflow
+
+The **CI** workflow runs on every push and pull request:
+- Installs backend dependencies
+- Installs frontend dependencies and runs `vite build`
+
+This ensures the project always builds cleanly before merging.
+
 ## License
 
 MIT

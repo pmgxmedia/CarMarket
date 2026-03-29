@@ -20,7 +20,7 @@ export const SocketProvider = ({ children }) => {
     if (user && user.role !== 'admin') {
       const token = localStorage.getItem('token')
       
-      const newSocket = io('/', {
+      const newSocket = io(import.meta.env.VITE_API_URL || '/', {
         auth: { token },
         transports: ['websocket', 'polling']
       })
