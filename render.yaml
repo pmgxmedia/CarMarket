@@ -1,0 +1,32 @@
+# Render Blueprint – declarative infrastructure for the CarMarket backend.
+# Docs: https://render.com/docs/blueprint-spec
+#
+# After connecting your GitHub repo in the Render Dashboard, Render will read
+# this file and create the service automatically.
+services:
+  - type: web
+    name: carmarket-backend
+    runtime: node
+    region: oregon          # change to the region closest to your users
+    plan: free              # upgrade to "starter" or higher for production
+    rootDir: backend
+    buildCommand: npm ci
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000        # Render sets PORT automatically; this is the default
+      - key: MONGODB_URI
+        sync: false         # set manually in the Render Dashboard
+      - key: JWT_SECRET
+        generateValue: true # Render generates a secure random value
+      - key: JWT_EXPIRES_IN
+        value: 7d
+      - key: CLOUDINARY_CLOUD_NAME
+        sync: false
+      - key: CLOUDINARY_API_KEY
+        sync: false
+      - key: CLOUDINARY_API_SECRET
+        sync: false
